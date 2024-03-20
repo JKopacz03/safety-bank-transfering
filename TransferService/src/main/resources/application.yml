@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  liquibase:
+    change-log: classpath:changelog-master.xml
+    enabled: true
+  datasource:
+    username: "postgres"
+    password: "qwerty"
+    url: "jdbc:postgresql://localhost:5432/transfer"
+    driver-class: "org.postgresql.Driver"
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true

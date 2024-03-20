@@ -1,0 +1,60 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="jarek">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="jarek">
+        <createTable tableName="account">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_number" type="BIGINT"/>
+            <column name="account_type" type="VARCHAR(50)"/>
+            <column name="balance" type="DECIMAL(10,2)"/>
+            <column name="currency" type="VARCHAR(3)"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="account"
+                                 baseColumnNames="user_id"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_account_user"/>
+    </changeSet>
+
+    <changeSet id="3" author="jarek">
+        <createTable tableName="transaction">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="date_time" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP"/>
+            <column name="transaction_type" type="VARCHAR(50)"/>
+            <column name="amount" type="DECIMAL(10,2)"/>
+            <column name="account_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="transaction"
+                                 baseColumnNames="account_id"
+                                 referencedTableName="account"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_transaction_account"/>
+    </changeSet>
+
+</databaseChangeLog>
