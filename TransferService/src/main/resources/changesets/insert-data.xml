@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="load-users-data" author="admin">
+        <loadData encoding="UTF-8" file="changesets/data/users.csv" quotchar="&quot;" separator="," tableName="users">
+            <column header="id" name="id"/>
+            <column header="username" name="username"/>
+            <column header="password" name="password"/>
+            <column header="role" name="role"/>
+        </loadData>
+    </changeSet>
+
+    <changeSet id="load-account-data" author="admin">
+        <loadData encoding="UTF-8" file="changesets/data/account.csv" quotchar="&quot;" separator="," tableName="account">
+            <column header="id" name="id"/>
+            <column header="accountNumber" name="account_number"/>
+            <column header="accountType" name="account_type"/>
+            <column header="balance" name="balance"/>
+            <column header="currency" name="currency"/>
+            <column header="user_id" name="user_id"/>
+            <column header="version" name="version"/>
+        </loadData>
+    </changeSet>
+
+</databaseChangeLog>

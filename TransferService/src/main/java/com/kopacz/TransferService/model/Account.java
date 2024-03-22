@@ -15,7 +15,6 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,4 +34,6 @@ public class Account {
     )
     @JoinColumn(name = "user_id")
     private User user;
+    @Version
+    private Integer version;
 }

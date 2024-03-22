@@ -7,5 +7,6 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
         <include file="/changesets/create-master-tables.xml"/>
+        <include file="/changesets/insert-data.xml"/>
 
 </databaseChangeLog>

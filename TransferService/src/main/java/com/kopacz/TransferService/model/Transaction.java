@@ -17,7 +17,7 @@ public class Transaction {
     private Long id;
     private LocalDateTime dateTime = LocalDateTime.now();
     @Enumerated(EnumType.STRING)
-    private TransactionType type;
+    private TransactionType transactionType;
     private BigDecimal amount;
     @ManyToOne(
             cascade={CascadeType.PERSIST, CascadeType.MERGE}
@@ -26,7 +26,7 @@ public class Transaction {
     private Account account;
 
     public Transaction(TransactionType type, BigDecimal amount, Account account) {
-        this.type = type;
+        this.transactionType = type;
         this.account = account;
         if(type.equals(TransactionType.SEND)){
             this.amount = amount.negate();

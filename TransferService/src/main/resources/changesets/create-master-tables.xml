@@ -30,6 +30,7 @@
             <column name="balance" type="DECIMAL(10,2)"/>
             <column name="currency" type="VARCHAR(3)"/>
             <column name="user_id" type="BIGINT"/>
+            <column name="version" type="INT"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="account"
@@ -44,7 +45,7 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="date_time" type="TIMESTAMP" defaultValue="CURRENT_TIMESTAMP"/>
+            <column name="date_time" type="TIMESTAMP"/>
             <column name="transaction_type" type="VARCHAR(50)"/>
             <column name="amount" type="DECIMAL(10,2)"/>
             <column name="account_id" type="BIGINT"/>

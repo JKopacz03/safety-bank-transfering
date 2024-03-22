@@ -1,4 +1,4 @@
-package com.kopacz.TransferService.model.enums;
+package com.kopacz.ConstraintsService.model;
 
 public enum Currency {
     PLN,
