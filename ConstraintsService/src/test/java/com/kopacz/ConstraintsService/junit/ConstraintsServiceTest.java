@@ -1,4 +1,4 @@
-package com.kopacz.ConstraintsService;
+package com.kopacz.ConstraintsService.junit;
 
 import com.kopacz.ConstraintsService.model.Currency;
 import com.kopacz.ConstraintsService.model.Transfer;
@@ -14,23 +14,29 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith(MockitoExtension.class)
 public class ConstraintsServiceTest {
     @Mock
     private RestTemplate restTemplate;
+    @Mock
+    private Clock clock;
     @InjectMocks
     private ConstraintsService constraintsService;
+    private Clock fixedClock;
 
     @Test
     void validate_allOk_returnsOk(){
         //given
+        fixedClock = Clock.fixed(LocalDate.of(2024,3,20).atStartOfDay(
+                ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
+        doReturn(fixedClock.instant()).when(clock).instant();
+        doReturn(fixedClock.getZone()).when(clock).getZone();
+
         Transfer transfer = new Transfer(BigDecimal.valueOf(100.00), Currency.PLN);
 
         String url = "https://latest.currency-api.pages.dev/v1/currencies/eur.json";
@@ -44,6 +50,11 @@ public class ConstraintsServiceTest {
     @Test
     void validate_amountBiggerThen15EuroFromPln_returnMAX15K_EURO_CONSTRAINT(){
         //given
+        fixedClock = Clock.fixed(LocalDate.of(2024,3,20).atStartOfDay(
+                ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
+        doReturn(fixedClock.instant()).when(clock).instant();
+        doReturn(fixedClock.getZone()).when(clock).getZone();
+
         Transfer transfer = new Transfer(BigDecimal.valueOf(70000.00), Currency.PLN);
 
         String url = "https://latest.currency-api.pages.dev/v1/currencies/eur.json";
@@ -57,10 +68,12 @@ public class ConstraintsServiceTest {
     @Test
     void validate_transferInWeekend_returnTRANSFER_IN_WEEKEND_CONSTRAINT(){
         //given
-        Transfer transfer = new Transfer(BigDecimal.valueOf(100.00), Currency.PLN);
+        fixedClock = Clock.fixed(LocalDate.of(2024,3,23).atStartOfDay(
+                ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
+        doReturn(fixedClock.instant()).when(clock).instant();
+        doReturn(fixedClock.getZone()).when(clock).getZone();
 
-        MockedStatic<LocalDateTime> mockedStatic = mockStatic(LocalDateTime.class);
-        mockedStatic.when(LocalDateTime::now).thenReturn(LocalDateTime.of(23,3,2024,12,0,0));
+        Transfer transfer = new Transfer(BigDecimal.valueOf(100.00), Currency.PLN);
         //when
         String result = constraintsService.validate(transfer);
         //then

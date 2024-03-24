@@ -1,0 +1,4 @@
+id,username,password,role
+1,user1,$2a$12$fsj2iK883mPVO9LUSXLlNezboDonmqwz3JCMYZ64638HpZg7oQSwi,USER
+2,user2,$2a$12$fsj2iK883mPVO9LUSXLlNezboDonmqwz3JCMYZ64638HpZg7oQSwi,USER
+3,user3,$2a$12$fsj2iK883mPVO9LUSXLlNezboDonmqwz3JCMYZ64638HpZg7oQSwi,USER

@@ -1,0 +1,8 @@
+server:
+  port: 8081
+
+spring:
+  liquibase:
+    change-log: classpath:liquibase-test-changelog.xml
+    enabled: true
+    drop-first: true

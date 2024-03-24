@@ -1,4 +1,4 @@
-package com.kopacz.TransferService;
+package com.kopacz.TransferService.service;
 import com.kopacz.TransferService.exceptions.*;
 import com.kopacz.TransferService.model.Account;
 import com.kopacz.TransferService.model.Transaction;

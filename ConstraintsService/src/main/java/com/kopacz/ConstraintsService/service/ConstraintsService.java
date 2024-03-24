@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -18,11 +20,12 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 public class ConstraintsService {
     private final RestTemplate restTemplate;
+    private final Clock clock;
 
     @RabbitListener(queues = "constraints-queue")
     public String validate(Transfer transfer){
-        if (LocalDateTime.now().getDayOfWeek().equals(DayOfWeek.SATURDAY)
-        || LocalDateTime.now().getDayOfWeek().equals(DayOfWeek.SUNDAY)){
+        if (LocalDate.now(clock).getDayOfWeek().equals(DayOfWeek.SATURDAY)
+        || LocalDate.now(clock).getDayOfWeek().equals(DayOfWeek.SUNDAY)){
             return "TRANSFER_IN_WEEKEND_CONSTRAINT";
         }
         if(getAmountInEuro(transfer).compareTo(BigDecimal.valueOf(15000)) > 0){
