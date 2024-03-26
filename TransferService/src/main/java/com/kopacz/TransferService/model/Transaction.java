@@ -1,5 +1,6 @@
 package com.kopacz.TransferService.model;
 
+import com.kopacz.TransferService.model.enums.TransactionStatus;
 import com.kopacz.TransferService.model.enums.TransactionType;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,10 +25,13 @@ public class Transaction {
     )
     @JoinColumn(name = "account_id")
     private Account account;
+    @Enumerated(EnumType.STRING)
+    private TransactionStatus status;
 
-    public Transaction(TransactionType type, BigDecimal amount, Account account) {
+    public Transaction(TransactionType type, BigDecimal amount, Account account, TransactionStatus transactionStatus) {
         this.transactionType = type;
         this.account = account;
+        this.status = transactionStatus;
         if(type.equals(TransactionType.SEND)){
             this.amount = amount.negate();
         } else {

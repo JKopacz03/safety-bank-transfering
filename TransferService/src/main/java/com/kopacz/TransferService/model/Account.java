@@ -34,6 +34,4 @@ public class Account {
     )
     @JoinColumn(name = "user_id")
     private User user;
-    @Version
-    private Integer version;
 }

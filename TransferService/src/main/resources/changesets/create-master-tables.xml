@@ -30,7 +30,6 @@
             <column name="balance" type="DECIMAL(10,2)"/>
             <column name="currency" type="VARCHAR(3)"/>
             <column name="user_id" type="BIGINT"/>
-            <column name="version" type="INT"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="account"
@@ -49,6 +48,7 @@
             <column name="transaction_type" type="VARCHAR(50)"/>
             <column name="amount" type="DECIMAL(10,2)"/>
             <column name="account_id" type="BIGINT"/>
+            <column name="status" type="VARCHAR(50)"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="transaction"

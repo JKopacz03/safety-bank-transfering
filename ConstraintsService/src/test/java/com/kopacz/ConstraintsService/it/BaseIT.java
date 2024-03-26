@@ -16,6 +16,7 @@ public class BaseIT {
     @Container
     public static final RabbitMQContainer container = new RabbitMQContainer("rabbitmq:3.8-management-alpine")
             .withQueue("constraints-queue")
+            .withQueue("constraints-back-queue")
             .withEnv("RABBITMQ_DEFAULT_CONSTRAINTS", "constraints-app");
 
     @DynamicPropertySource

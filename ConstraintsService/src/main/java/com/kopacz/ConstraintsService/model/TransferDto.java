@@ -6,10 +6,13 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Transfer {
+@Data
+public class TransferDto {
+    private Long fromAccount;
+    private Long toAccount;
     private BigDecimal amount;
     private Currency currency;
+    private String mess;
 }

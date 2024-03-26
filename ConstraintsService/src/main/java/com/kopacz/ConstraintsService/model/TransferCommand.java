@@ -1,17 +1,15 @@
-package com.kopacz.TransferService.model.dto;
+package com.kopacz.ConstraintsService.model;
 
-import com.kopacz.TransferService.model.enums.Currency;
-import jakarta.validation.constraints.DecimalMin;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class TransferConstraintsDto {
+public class TransferCommand {
     private Long fromAccount;
     private Long toAccount;
     private BigDecimal amount;

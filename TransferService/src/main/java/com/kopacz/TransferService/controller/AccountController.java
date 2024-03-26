@@ -5,6 +5,7 @@ import com.kopacz.TransferService.model.dto.TransferDto;
 import com.kopacz.TransferService.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +18,8 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<TransferDto> transfer(@Valid @RequestBody TransferCommand transferCommand,
+    public ResponseEntity<String> transfer(@Valid @RequestBody TransferCommand transferCommand,
                                                 Principal principal){
-        return ResponseEntity.ok(accountService.transfer(transferCommand, principal.getName()));
+        return ResponseEntity.ok(accountService.validateTransfer(transferCommand, principal.getName()));
     }
 }

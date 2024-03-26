@@ -3,15 +3,11 @@ package com.kopacz.TransferService.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kopacz.TransferService.model.command.TransferCommand;
+import com.kopacz.TransferService.model.command.TransferConstraintsCommand;
 import com.kopacz.TransferService.model.dto.TransferConstraintsDto;
 import com.kopacz.TransferService.model.dto.TransferDto;
 import com.kopacz.TransferService.model.enums.Currency;
-import com.kopacz.TransferService.service.AccountService;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,6 +23,7 @@ import java.math.BigDecimal;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -44,7 +41,7 @@ public class AccountControllerTest extends BaseIT{
     }
 
     @Test
-    void secondTransferShouldntSucceedCauseThenAccountBalanceIsNegativeŻ() throws Exception {
+    void secondTransferShouldntSucceedCauseThenAccountBalanceIsNegative() throws Exception {
         Mono<TransferDto> transfer1 = sendTransferRequest()
                 .onErrorResume(WebClientResponseException.BadRequest.class, ex -> Mono.empty());
 
@@ -76,13 +73,22 @@ public class AccountControllerTest extends BaseIT{
     void shouldTransfer() throws Exception {
         TransferCommand transferCommand = new TransferCommand(new BigDecimal("100"), 1001L, 1002L);
         String json = objectMapper.writeValueAsString(transferCommand);
-        when(rabbitTemplate.convertSendAndReceive(anyString(), any(TransferConstraintsDto.class))).thenReturn("OK");
+
+        doAnswer(e -> {
+            rabbitTemplate.convertAndSend("constraints-back-queue", new TransferConstraintsCommand(
+                    transferCommand.getFromAccount(),
+                    transferCommand.getToAccount(),
+                    transferCommand.getAmount(),
+                    Currency.PLN,
+                    "OK"
+            ));
+            return null;
+        }).when(rabbitTemplate).convertAndSend(anyString(), any(TransferConstraintsDto.class));
 
         mockMvc.perform(post("/api/v1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-                .andExpect(status().isOk())
-                .andExpect(content().string("{\"message\":\"Transfer 100,000000 to 1002 end successfully\"}"));
+                .andExpect(status().isOk());
     }
 
     @Test

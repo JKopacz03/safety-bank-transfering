@@ -27,7 +27,8 @@ public class BaseIT {
                     .withUsername("postgres");
     @Container
     public static final RabbitMQContainer container = new RabbitMQContainer("rabbitmq:3.8-management-alpine")
-            .withQueue("transfer-queue")
+            .withQueue("constraints-queue")
+            .withQueue("constraints-back-queue")
             .withEnv("RABBITMQ_DEFAULT_TRANSFER", "transfer-app");
 
     @DynamicPropertySource
