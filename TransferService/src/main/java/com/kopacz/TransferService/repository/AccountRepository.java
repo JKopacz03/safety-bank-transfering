@@ -13,7 +13,5 @@ import java.math.BigDecimal;
 import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
-    @Transactional
     Optional<Account> findByAccountNumber(Long fromAccount);
 }

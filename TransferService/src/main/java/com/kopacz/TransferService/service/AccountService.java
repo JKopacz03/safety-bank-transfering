@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -51,7 +52,6 @@ public class AccountService {
         return "Your transfer was commissioned";
     }
 
-    @Transactional
     @RabbitListener(queues = "constraints-back-queue")
     public void transfer(TransferConstraintsCommand constraintsCommand){
         BigDecimal amount = constraintsCommand.getAmount();
@@ -64,13 +64,18 @@ public class AccountService {
         try {
             validateConstraints(constraintsCommand.getMess());
 
-            accountFrom.setBalance(accountFrom.getBalance().subtract(amount));
-            accountTo.setBalance(accountTo.getBalance().add(amount));
-
-            saveTransactions(amount, accountFrom, accountTo);
+            transfer(accountFrom, amount, accountTo);
         } catch(TransferConstraintsException e){
             saveFailedTransactions(amount, accountFrom, accountTo);
         }
+    }
+
+    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
+    private void transfer(Account accountFrom, BigDecimal amount, Account accountTo) {
+        accountFrom.setBalance(accountFrom.getBalance().subtract(amount));
+        accountTo.setBalance(accountTo.getBalance().add(amount));
+
+        saveTransactions(amount, accountFrom, accountTo);
     }
 
     private static void validateAccountsNumbers(TransferCommand command) {
