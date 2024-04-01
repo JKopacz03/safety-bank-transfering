@@ -49,6 +49,7 @@
             <column name="amount" type="DECIMAL(10,2)"/>
             <column name="account_id" type="BIGINT"/>
             <column name="status" type="VARCHAR(50)"/>
+            <column name="version" type="BIGINT"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="transaction"

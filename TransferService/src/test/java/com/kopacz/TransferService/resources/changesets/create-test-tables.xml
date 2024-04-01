@@ -30,6 +30,7 @@
             <column name="balance" type="DECIMAL(10,2)"/>
             <column name="currency" type="VARCHAR(3)"/>
             <column name="user_id" type="BIGINT"/>
+            <column name="version" type="BIGINT"/>
         </createTable>
 
         <addForeignKeyConstraint baseTableName="account"

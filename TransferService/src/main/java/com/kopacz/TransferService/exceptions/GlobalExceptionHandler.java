@@ -33,8 +33,8 @@ public class GlobalExceptionHandler {
         return createErrorResponse(BAD_REQUEST, ex.getMessage(), request);
     }
 
-    @ExceptionHandler(LockTimeoutException.class)
-    public ResponseEntity<ErrorMessage> lockTimeoutException(LockTimeoutException ex, HttpServletRequest request) {
+    @ExceptionHandler(OptimisticLockException.class)
+    public ResponseEntity<ErrorMessage> optimisticLockException(OptimisticLockException ex, HttpServletRequest request) {
         return createErrorResponse(BAD_REQUEST, "Please try again a transaction", request);
     }
 
