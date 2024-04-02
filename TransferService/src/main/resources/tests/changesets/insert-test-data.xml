@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <changeSet id="load-users-data" author="admin">
-        <loadData encoding="UTF-8" file="changesets/data/users-test.csv" quotchar="&quot;" separator="," tableName="users">
+        <loadData encoding="UTF-8" file="tests/changesets/data/users-test.csv" quotchar="&quot;" separator="," tableName="users">
             <column header="id" name="id"/>
             <column header="username" name="username"/>
             <column header="password" name="password"/>
@@ -12,8 +12,8 @@
         </loadData>
     </changeSet>
 
-    <changeSet id="load-users-data" author="admin">
-        <loadData encoding="UTF-8" file="changesets/data/accounts-test.csv" quotchar="&quot;" separator="," tableName="users">
+    <changeSet id="load-account-data" author="admin">
+        <loadData encoding="UTF-8" file="tests/changesets/data/accounts-test.csv" quotchar="&quot;" separator="," tableName="account">
             <column header="id" name="id"/>
             <column header="account_number" name="account_number"/>
             <column header="account_type" name="account_type"/>

@@ -14,6 +14,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -42,10 +43,10 @@ public class AccountControllerTest extends BaseIT{
 
     @Test
     void secondTransferShouldntSucceedCauseThenAccountBalanceIsNegative() throws Exception {
-        Mono<TransferDto> transfer1 = sendTransferRequest()
+        Mono<String> transfer1 = sendTransferRequest()
                 .onErrorResume(WebClientResponseException.BadRequest.class, ex -> Mono.empty());
 
-        Mono<TransferDto> transfer2 = sendTransferRequest()
+        Mono<String> transfer2 = sendTransferRequest()
                 .onErrorResume(WebClientResponseException.BadRequest.class, ex -> Mono.empty());
 
         Mono.zip(transfer1, transfer2)
@@ -55,7 +56,7 @@ public class AccountControllerTest extends BaseIT{
                 .block();
     }
 
-    public Mono<TransferDto> sendTransferRequest() {
+    public Mono<String> sendTransferRequest() {
         WebClient webClient = WebClient.create("http://localhost:8081");
         TransferCommand transferCommand = new TransferCommand(new BigDecimal("700"), 1001L, 1002L);
 
@@ -65,8 +66,10 @@ public class AccountControllerTest extends BaseIT{
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Mono.just(transferCommand), TransferCommand.class)
                 .retrieve()
-                .bodyToMono(TransferDto.class);
+                .bodyToMono(String.class);
     }
+
+    
 
     @Test
     @WithMockUser(username = "user1")

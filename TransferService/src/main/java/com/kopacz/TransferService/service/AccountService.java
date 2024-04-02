@@ -53,6 +53,7 @@ public class AccountService {
     }
 
     @RabbitListener(queues = "constraints-back-queue")
+    @Transactional
     public void transfer(TransferConstraintsCommand constraintsCommand){
         BigDecimal amount = constraintsCommand.getAmount();
 
@@ -64,18 +65,13 @@ public class AccountService {
         try {
             validateConstraints(constraintsCommand.getMess());
 
-            transfer(accountFrom, amount, accountTo);
+            accountFrom.setBalance(accountFrom.getBalance().subtract(amount));
+            accountTo.setBalance(accountTo.getBalance().add(amount));
+
+            saveTransactions(amount, accountFrom, accountTo);
         } catch(TransferConstraintsException e){
             saveFailedTransactions(amount, accountFrom, accountTo);
         }
-    }
-
-    @Transactional(isolation = Isolation.READ_COMMITTED, readOnly = true)
-    private void transfer(Account accountFrom, BigDecimal amount, Account accountTo) {
-        accountFrom.setBalance(accountFrom.getBalance().subtract(amount));
-        accountTo.setBalance(accountTo.getBalance().add(amount));
-
-        saveTransactions(amount, accountFrom, accountTo);
     }
 
     private static void validateAccountsNumbers(TransferCommand command) {

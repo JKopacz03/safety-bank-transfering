@@ -17,7 +17,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/TransferService/src/test/java/com/kopacz/TransferService/resources/changesets/data/accounts-test.csv">
+        <entry key="/TransferService/src/main/resources/tests/changesets/data/accounts-test.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

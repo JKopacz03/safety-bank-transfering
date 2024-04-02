@@ -3,6 +3,6 @@ server:
 
 spring:
   liquibase:
-    change-log: classpath:liquibase-test-changelog.xml
+    change-log: classpath:tests/liquibase-test-changelog.xml
     enabled: true
     drop-first: true

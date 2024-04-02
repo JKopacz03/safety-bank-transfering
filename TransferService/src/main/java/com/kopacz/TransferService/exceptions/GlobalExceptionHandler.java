@@ -38,6 +38,11 @@ public class GlobalExceptionHandler {
         return createErrorResponse(BAD_REQUEST, "Please try again a transaction", request);
     }
 
+    @ExceptionHandler(LockTimeoutException.class)
+    public ResponseEntity<ErrorMessage> lockTimeoutException(LockTimeoutException ex, HttpServletRequest request) {
+        return createErrorResponse(BAD_REQUEST, "Please try again a transaction", request);
+    }
+
     @ExceptionHandler(TransferConstraintsException.class)
     public ResponseEntity<ErrorMessage> transferConstraintsException(TransferConstraintsException ex, HttpServletRequest request) {
         return createErrorResponse(BAD_REQUEST, ex.getMessage(), request);
