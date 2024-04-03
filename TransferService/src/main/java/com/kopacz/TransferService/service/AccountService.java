@@ -10,6 +10,9 @@ import com.kopacz.TransferService.model.dto.TransferDto;
 import com.kopacz.TransferService.model.enums.TransactionStatus;
 import com.kopacz.TransferService.model.enums.TransactionType;
 import com.kopacz.TransferService.repository.AccountRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -26,6 +29,8 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final TransactionService transactionService;
     private final RabbitTemplate rabbitTemplate;
+    @PersistenceContext
+    private static EntityManager entityManager;
 
     public String validateTransfer(TransferCommand command, String username) {
         Account accountFrom = accountRepository.findByAccountNumber(command.getFromAccount())
@@ -65,8 +70,7 @@ public class AccountService {
         try {
             validateConstraints(constraintsCommand.getMess());
 
-            accountFrom.setBalance(accountFrom.getBalance().subtract(amount));
-            accountTo.setBalance(accountTo.getBalance().add(amount));
+            transfer(accountFrom, accountTo, amount);
 
             saveTransactions(amount, accountFrom, accountTo);
         } catch(TransferConstraintsException e){
@@ -82,12 +86,11 @@ public class AccountService {
             first = to;
             second = from;
         }
-        synchronized(first){
-            synchronized(second){
-                from.setBalance(from.getBalance().subtract(amount));
-                to.setBalance(to.getBalance().add(amount));
-            }
-        }
+        entityManager.lock(first, LockModeType.PESSIMISTIC_WRITE);
+        entityManager.lock(second, LockModeType.PESSIMISTIC_WRITE);
+
+        from.setBalance(from.getBalance().subtract(amount));
+        to.setBalance(to.getBalance().add(amount));
     }
 
     private static void validateAccountsNumbers(TransferCommand command) {
