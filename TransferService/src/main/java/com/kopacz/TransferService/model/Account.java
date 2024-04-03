@@ -15,7 +15,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Account {
+public class Account implements Comparable<Account>{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,4 +36,9 @@ public class Account {
     private User user;
     @Version
     private Integer version;
+
+    @Override
+    public int compareTo(Account o) {
+        return this.getId().compareTo(o.getId());
+    }
 }

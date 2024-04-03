@@ -74,6 +74,22 @@ public class AccountService {
         }
     }
 
+    @Transactional
+    public static void transfer(Account from, Account to, BigDecimal amount){
+        Account first = from;
+        Account second = to;
+        if (first.compareTo(second) < 0) {
+            first = to;
+            second = from;
+        }
+        synchronized(first){
+            synchronized(second){
+                from.setBalance(from.getBalance().subtract(amount));
+                to.setBalance(to.getBalance().add(amount));
+            }
+        }
+    }
+
     private static void validateAccountsNumbers(TransferCommand command) {
         if(Objects.equals(command.getFromAccount(), command.getToAccount())){
             throw new TransferToSameAccountException("Cannot transfer funds to same account");
