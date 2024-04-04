@@ -13,7 +13,6 @@ import java.util.Optional;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
     @Transactional
-    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
-    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "3000")})
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<Account> findByAccountNumber(Long fromAccount);
 }

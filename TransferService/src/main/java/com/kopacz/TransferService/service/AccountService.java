@@ -70,7 +70,7 @@ public class AccountService {
         try {
             validateConstraints(constraintsCommand.getMess());
 
-            transfer(accountFrom, accountTo, amount);
+            transfer(accountFrom.getAccountNumber(), accountTo.getAccountNumber(), amount);
 
             saveTransactions(amount, accountFrom, accountTo);
         } catch(TransferConstraintsException e){
@@ -79,18 +79,23 @@ public class AccountService {
     }
 
     @Transactional
-    public static void transfer(Account from, Account to, BigDecimal amount){
-        Account first = from;
-        Account second = to;
-        if (first.compareTo(second) < 0) {
-            first = to;
-            second = from;
+    public void transfer(Long fromNumber, Long toNumber, BigDecimal amount){
+        Account fromAcc;
+        Account toAcc;
+        if (fromNumber.compareTo(toNumber) < 0) {
+            fromAcc = accountRepository.findByAccountNumber(fromNumber)
+                    .orElseThrow(() -> new NotFoundAccountException("Account from not exist"));
+            toAcc = accountRepository.findByAccountNumber(toNumber)
+                    .orElseThrow(() -> new NotFoundAccountException("Account from not exist"));
+        } else {
+            toAcc = accountRepository.findByAccountNumber(toNumber)
+                    .orElseThrow(() -> new NotFoundAccountException("Account from not exist"));
+            fromAcc = accountRepository.findByAccountNumber(fromNumber)
+                    .orElseThrow(() -> new NotFoundAccountException("Account from not exist"));
         }
-        entityManager.lock(first, LockModeType.PESSIMISTIC_WRITE);
-        entityManager.lock(second, LockModeType.PESSIMISTIC_WRITE);
 
-        from.setBalance(from.getBalance().subtract(amount));
-        to.setBalance(to.getBalance().add(amount));
+        fromAcc.setBalance(fromAcc.getBalance().subtract(amount));
+        toAcc.setBalance(toAcc.getBalance().add(amount));
     }
 
     private static void validateAccountsNumbers(TransferCommand command) {
